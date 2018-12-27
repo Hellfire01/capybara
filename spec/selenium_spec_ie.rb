@@ -5,7 +5,6 @@ require 'selenium-webdriver'
 require 'shared_selenium_session'
 require 'rspec/shared_spec_matchers'
 
-
 ::Selenium::WebDriver::IE.driver_path = 'C:\Tools\WebDriver\IEDriverServer.exe' if ENV['CI']
 
 Capybara.register_driver :selenium_ie do |app|
@@ -26,11 +25,16 @@ if ENV['REMOTE']
     browser_options = ::Selenium::WebDriver::IE::Options.new
     # browser_options.require_window_focus = true
 
-    Capybara::Selenium::Driver.new app,
+    Capybara::Selenium::Driver.new(app,
                                    browser: :remote,
                                    desired_capabilities: :ie,
                                    options: browser_options,
-                                   url: url
+                                   url: url).tap do |driver|
+      driver.browser.file_detector = lambda do |args|
+        str = args.first.to_s
+        str if File.exist?(str)
+      end
+    end
   end
 
   Capybara.server_host = '10.24.4.135'
@@ -40,10 +44,10 @@ module TestSessions
   SeleniumIE = Capybara::Session.new(:selenium_ie, TestApp)
 end
 
-TestSessions::SeleniumIE.driver.browser.file_detector = lambda do |args|
-  str = args.first.to_s
-  str if File.exist?(str)
-end if ENV['REMOTE']
+# TestSessions::SeleniumIE.driver.browser.file_detector = lambda do |args|
+#   str = args.first.to_s
+#   str if File.exist?(str)
+# end if ENV['REMOTE']
 
 TestSessions::SeleniumIE.current_window.resize_to(800, 500)
 
@@ -84,6 +88,12 @@ Capybara::SpecHelper.run_specs TestSessions::SeleniumIE, 'selenium', capybara_sk
   when /#scroll_to can scroll an element to the center of the viewport$/,
        /#scroll_to can scroll an element to the center of the scrolling element$/
     pending " IE doesn't support ScrollToOptions"
+  when /#attach_file with multipart form should fire change once for each set of files uploaded$/,
+       /#attach_file with multipart form should fire change once when uploading multiple files from empty$/,
+       /#attach_file with multipart form should not break when using HTML5 multiple file input uploading multiple files$/
+    pending "IE requires all files be uploaded from same directory. Selenium doesn't provide that." if ENV['REMOTE']
+  when %r{#attach_file with multipart form should send content type image/jpeg when uploading an image$}
+    pending 'IE gets text/plain type for some reason'
   end
 end
 
