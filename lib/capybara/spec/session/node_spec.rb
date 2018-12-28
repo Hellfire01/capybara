@@ -313,7 +313,7 @@ Capybara::SpecHelper.spec 'node' do
       expect(@session).to have_xpath('//div[contains(., "Dropped!")]')
     end
 
-    it 'should drag and drop if scrolling is needed', :ie_fails do
+    it 'should drag and drop if scrolling is needed' do
       @session.visit('/with_js')
       element = @session.find('//div[@id="drag_scroll"]')
       target = @session.find('//div[@id="drop_scroll"]')
