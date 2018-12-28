@@ -48,12 +48,11 @@ Capybara::SpecHelper.spec '#switch_to_frame', requires: [:frames] do
     end
   end
 
-  it 'works if the frame is closed', :ie_fails, requires: %i[frames js] do
+  it 'works if the frame is closed', requires: %i[frames js] do
     frame = @session.find(:frame, 'parentFrame')
     @session.switch_to_frame frame
     frame = @session.find(:frame, 'childFrame')
     @session.switch_to_frame frame
-
     @session.click_link 'Close Window'
     @session.switch_to_frame :parent # Go back to parentFrame
     expect(@session).to have_selector(:css, 'body#parentBody')
