@@ -94,6 +94,8 @@ Capybara::SpecHelper.run_specs TestSessions::SeleniumIE, 'selenium', capybara_sk
     pending "IE requires all files be uploaded from same directory. Selenium doesn't provide that." if ENV['REMOTE']
   when %r{#attach_file with multipart form should send content type image/jpeg when uploading an image$}
     pending 'IE gets text/plain type for some reason'
+  when /#click should not retry clicking when wait is disabled$/
+    pending "IE driver doesn't error when clicking on covered elements, it just clicks the wrong element"
   end
 end
 

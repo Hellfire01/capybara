@@ -437,7 +437,7 @@ Capybara::SpecHelper.spec 'node' do
       expect { obscured.click(wait: 4) }.not_to raise_error
     end
 
-    it 'should not retry clicking when wait is disabled', :ie_fails, requires: [:js] do
+    it 'should not retry clicking when wait is disabled', requires: [:js] do
       @session.visit('/obscured')
       obscured = @session.find(:css, '#obscured')
       @session.execute_script <<~JS
