@@ -13,26 +13,26 @@ Capybara::SpecHelper.spec '#attach_file' do
     it 'should set a file path by id' do
       @session.attach_file 'form_image', with_os_path_separators(__FILE__)
       @session.click_button('awesome')
-      expect(extract_results(@session)['image']).to eq(File.basename(__FILE__))
+      expect(extract_results(@session)['image']).to end_with(File.basename(__FILE__))
     end
 
     it 'should set a file path by label' do
       @session.attach_file 'Image', with_os_path_separators(__FILE__)
       @session.click_button('awesome')
-      expect(extract_results(@session)['image']).to eq(File.basename(__FILE__))
+      expect(extract_results(@session)['image']).to end_with(File.basename(__FILE__))
     end
 
     it 'should be able to set on element if no locator passed' do
       ff = @session.find(:file_field, 'Image')
       ff.attach_file(with_os_path_separators(__FILE__))
       @session.click_button('awesome')
-      expect(extract_results(@session)['image']).to eq(File.basename(__FILE__))
+      expect(extract_results(@session)['image']).to end_with(File.basename(__FILE__))
     end
 
     it 'casts to string' do
       @session.attach_file :form_image, with_os_path_separators(__FILE__)
       @session.click_button('awesome')
-      expect(extract_results(@session)['image']).to eq(File.basename(__FILE__))
+      expect(extract_results(@session)['image']).to end_with(File.basename(__FILE__))
     end
   end
 
@@ -60,7 +60,7 @@ Capybara::SpecHelper.spec '#attach_file' do
       expect(@session).to have_content('text/plain')
     end
 
-    it 'should send content type image/jpeg when uploading an image', :ie_fails do
+    it 'should send content type image/jpeg when uploading an image' do
       @session.attach_file 'Single Document', with_os_path_separators(@test_jpg_file_path)
       @session.click_button 'Upload Single'
       expect(@session).to have_content('image/jpeg')
@@ -109,7 +109,7 @@ Capybara::SpecHelper.spec '#attach_file' do
       expect(@session).to have_css('.file_change', count: 1)
     end
 
-    it 'should fire change once for each set of files uploaded', :ie_fails, requires: [:js] do
+    it 'should fire change once for each set of files uploaded', requires: [:js] do
       @session.visit('with_js')
       @session.attach_file('multiple-file', [@test_jpg_file_path].map { |f| with_os_path_separators(f) })
       @session.attach_file('multiple-file',
@@ -137,7 +137,7 @@ Capybara::SpecHelper.spec '#attach_file' do
     it 'should set a file path by partial label when false' do
       @session.attach_file 'Imag', with_os_path_separators(__FILE__), exact: false
       @session.click_button('awesome')
-      expect(extract_results(@session)['image']).to eq(File.basename(__FILE__))
+      expect(extract_results(@session)['image']).to end_with(File.basename(__FILE__))
     end
 
     it 'should not allow partial matches when true' do

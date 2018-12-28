@@ -21,14 +21,14 @@ end
 
 if ENV['REMOTE']
   Capybara.register_driver :selenium_ie do |app|
-    url = 'http://192.168.56.101:4444/wd/hub'
-    browser_options = ::Selenium::WebDriver::IE::Options.new
-    # browser_options.require_window_focus = true
+    url = 'http://192.168.56.102:4444/wd/hub'
+    options = ::Selenium::WebDriver::IE::Options.new
+    options.require_window_focus = true
 
     Capybara::Selenium::Driver.new(app,
                                    browser: :remote,
-                                   desired_capabilities: :ie,
-                                   options: browser_options,
+                                   desired_capabilities: ::Selenium::WebDriver::Remote::Capabilities.ie,
+                                   options: options,
                                    url: url).tap do |driver|
       driver.browser.file_detector = lambda do |args|
         str = args.first.to_s
@@ -105,7 +105,7 @@ end
 
 RSpec.describe Capybara::Selenium::Node do
   it '#right_click should allow modifiers' do
-    pending "Actions API doesn't appear to work for this"
+    # pending "Actions API doesn't appear to work for this"
     session = TestSessions::SeleniumIE
     session.visit('/with_js')
     el = session.find(:css, '#click-test')
@@ -114,7 +114,7 @@ RSpec.describe Capybara::Selenium::Node do
   end
 
   it '#click should allow multiple modifiers' do
-    pending "Actions API doesn't appear to work for this"
+    # pending "Actions API doesn't appear to work for this"
     session = TestSessions::SeleniumIE
     session.visit('with_js')
     # IE triggers system behavior with :meta so can't use those here
@@ -123,7 +123,7 @@ RSpec.describe Capybara::Selenium::Node do
   end
 
   it '#double_click should allow modifiers' do
-    pending "Actions API doesn't appear to work for this"
+    # pending "Actions API doesn't appear to work for this"
     session = TestSessions::SeleniumIE
     session.visit('/with_js')
     session.find(:css, '#click-test').double_click(:shift)
