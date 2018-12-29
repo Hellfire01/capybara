@@ -9,7 +9,7 @@ Capybara::SpecHelper.spec '#find' do
     Capybara::Selector.remove(:monkey)
   end
 
-  it 'should find the first element using the given locator' do
+  it 'should find the first element using the given locator', :focus_ do
     expect(@session.find('//h1').text).to eq('This is a test')
     expect(@session.find("//input[@id='test_field']").value).to eq('monkey')
   end

@@ -13,9 +13,14 @@ module Capybara
       def request(&block)
         ssl? ? https_request(&block) : http_request(&block)
       rescue *TRY_HTTPS_ERRORS
-        res = https_request(&block)
-        @ssl = true
-        res
+        begin
+          res = https_request(&block)
+          @ssl = true
+          res
+        rescue => e
+          puts e
+          raise
+        end
       end
 
       def ssl?
